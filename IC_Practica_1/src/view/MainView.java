@@ -4,17 +4,20 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Rectangle;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 
 public class MainView extends JFrame {
 
@@ -24,14 +27,15 @@ public class MainView extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private JPanel body;
+	private JTextArea log;
 	
 	public MainView() {
 		super();
 	    this.setTitle("Practica 1 - Juan G-Martinho");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setResizable(true);
-		this.setSize(500,500);
-		this.setResizable(false);
+		this.setSize(600,500);
+		//this.setResizable(false);
 		this.setMinimumSize(new Dimension(200,200));
 		
 		JMenuBar m = new JMenuBar();
@@ -44,7 +48,7 @@ public class MainView extends JFrame {
 		generateNorth();
 		generateSouth();
 		generateEast();
-		generateWest();
+		//generateWest();
 		generateCenter();
 		
 		this.add(body);
@@ -55,12 +59,42 @@ public class MainView extends JFrame {
 		body.add(north, BorderLayout.NORTH);
 	}
 	private void generateSouth() {
-		JLabel south = new JLabel("South", SwingConstants.CENTER);
-		body.add(south, BorderLayout.SOUTH);
+		JPanel panel = new JPanel(new GridLayout(2,2));
+		
+		for(int i = 0; i<2*2; i++) {
+			final int n = i;
+			JButton b = new JButton();
+			b.setText("buttton " + i);
+			b.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					String sep = System.lineSeparator();
+					log.append(sep + "Se ha pulsado: " + n);
+					
+				}
+				
+			});
+			panel.add(b);
+		}
+		
+		panel.setSize(200,200);
+		body.add(panel, BorderLayout.SOUTH);
 	}
 	private void generateEast() {
-		JLabel east = new JLabel("East", SwingConstants.CENTER);
-		body.add(east, BorderLayout.EAST);
+		JPanel panel = new JPanel(new GridLayout(1,1));
+				
+			log = new JTextArea();
+			log.setEditable(false);
+			log.setText("Iniciando Log del mapa...");
+
+		TitledBorder title = BorderFactory.createTitledBorder("Log");
+		JScrollPane scroll = new JScrollPane(log);
+		scroll.setBorder(title);
+		panel.setSize(400, 300);
+		panel.setMinimumSize(new Dimension(400,300));
+		panel.add(scroll);
+		body.add(panel, BorderLayout.EAST);
 	}
 	private void generateWest() {
 		JLabel west = new JLabel("West", SwingConstants.CENTER);
@@ -68,12 +102,14 @@ public class MainView extends JFrame {
 	}
 	private void generateCenter() {
 		
-		JPanel center = new JPanel(new GridLayout(6,6));
+		JPanel center = new JPanel(new GridLayout(10,10));
 		
-		for(int i = 0; i < 6*6; i++) {
+		for(int i = 0; i < 10*10; i++) {
 			JLabel label = new JLabel("");
-		    label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		    label.setBackground(Color.white);
+			label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			double r = Math.random();
+		    if(r>=0.4) label.setBackground(Color.white);
+		    else label.setBackground(Color.red);
 		    label.setOpaque(true);
 		    center.add(label);
 		}
