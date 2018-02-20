@@ -6,10 +6,13 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -30,6 +33,12 @@ public class MainView extends JFrame {
 		this.setSize(500,500);
 		this.setResizable(false);
 		this.setMinimumSize(new Dimension(200,200));
+		
+		JMenuBar m = new JMenuBar();
+		JMenu one = new JMenu("File");
+		m.add(one);
+		this.setJMenuBar(m);
+		
 		body = new JPanel(new BorderLayout());
 		
 		generateNorth();
