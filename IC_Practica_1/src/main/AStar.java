@@ -4,7 +4,11 @@ import javax.swing.JFrame;
 
 import view.MainView;
 
-public class Main {
+/**
+ * @author Juan Gómez-Martinho González
+ *
+ */
+public class AStar {
 
 	public static void main(String[] args) {
 		JFrame m = new MainView();
