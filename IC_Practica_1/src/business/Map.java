@@ -15,6 +15,7 @@ public class Map {
 	public Map(int dimX, int dimY) {
 		this.x = dimX;
 		this.y = dimY;
+		map = new Cell[x][y];
 		
 		for (int i = 0; i < x; i++) {
 			for(int j = 0; j < y; j++) {
@@ -30,7 +31,7 @@ public class Map {
 		}
 	}
 	public void setCell(Cell c, int posX, int posY) {
-		if((x>=posX)||(y>=posY)||(posX<0)||(posY<0)) {
+		if((posX>=x)||(posY>=y)||(posX<0)||(posY<0)) {
 			
 		}else {
 			map[posX][posY]=c;
@@ -38,13 +39,18 @@ public class Map {
 	}
 
 	public Cell getCell(int posX, int posY) {
-		if((x>=posX)||(y>=posY)||(posX<0)||(posY<0)) {
+		if((posX>=x)||(posY>=y)||(posX<0)||(posY<0)) {
 			return null;
 		}else {
 			return map[posX][posY];
 		}
 	}
-	
+	public int width() {
+		return x;
+	}
+	public int height() {
+		return y;
+	}
 	public String toString() {
 		String result = "";
 		String jump = System.lineSeparator();

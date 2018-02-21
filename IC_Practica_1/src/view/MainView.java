@@ -20,6 +20,9 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import business.Map;
+import business.SimpleMap;
+
 /**
  * @author Juan Gómez-Martinho González
  *
@@ -33,14 +36,17 @@ public class MainView extends JFrame {
 
 	private JPanel body;
 	private JTextArea log;
+	private JPanel center;
+
+	private Map map;
 	
 	public MainView() {
 		super();
 	    this.setTitle("Pathfinder - A*");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setResizable(true);
-		this.setSize(700,500);
-		//this.setResizable(false);
+		this.setSize(700,550);
+		this.setResizable(false);
 		this.setMinimumSize(new Dimension(200,200));
 		
 		JMenuBar m = new JMenuBar();
@@ -54,39 +60,42 @@ public class MainView extends JFrame {
 		
 		generateNorth();
 		generateSouth();
-		generateEast();
+	
 		//generateWest();
 		generateCenter();
+		generateEast();
 		
 		this.add(body);
 	}
 	
 	private void generateNorth() {
-		JLabel north = new JLabel("North", SwingConstants.CENTER);
+		JLabel north = new JLabel("A* pathfinding map.", SwingConstants.CENTER);
 		body.add(north, BorderLayout.NORTH);
 	}
+	
+	
 	private void generateSouth() {
 		JPanel panel = new JPanel(new GridLayout(2,2));
 		String sep = System.lineSeparator();
 		
 		JButton setBegin = new JButton();
-		setBegin.setText("Set start");
+		setBegin.setText("Instant GO");
 		setBegin.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				log.append(sep + "Press the start cell.");
+				log.append(sep + "Path will be found as fast as possible.");
 			}
 			
 		});
 		panel.add(setBegin);
 		JButton setGoal = new JButton();
-		setGoal.setText("Set goal");
+		setGoal.setText("Step-by-step GO");
 		setGoal.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				log.append(sep + "Press the goal cell.");
+				log.append(sep + "Path will be displayed step by step.");
 			}
 			
 		});
@@ -109,6 +118,8 @@ public class MainView extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				log.append(sep + "Randomizing the map...");
+				map = new SimpleMap(map.width(),map.height());
+				redrawMap();
 			}
 			
 		});
@@ -143,32 +154,94 @@ public class MainView extends JFrame {
 	
 	private void generateCenter() {
 		
-		JPanel center = new JPanel(new GridLayout(10,10));
+		map = new SimpleMap(10,10);
 		
-		for(int i = 0; i < 10*10; i++) {
-			final int n = i;
-			JLabel label = new JLabel("");
-			label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-			double r = Math.random();
-		    if(r>=0.4) label.setBackground(Color.white);
-		    else label.setBackground(Color.red);
-		    label.setOpaque(true);
-		    label.addMouseListener(new MouseAdapter() {
-		    	public void mouseClicked(MouseEvent e)  
-		        {  
-		           if(label.getBackground()==Color.white) label.setBackground(Color.red);
-		           else label.setBackground(Color.white);
-		           String sep = System.lineSeparator();
-		           log.append(sep + "You've pressed: cell " + (n/10) + "-" + (n%10));
-
-		        } 
-		    });
-		    center.add(label);
-		}
+		drawMap();
+		
 		center.setMinimumSize(new Dimension(200,200));
 		center.setMaximumSize(new Dimension(300,300));
 		
 		body.add(center, BorderLayout.CENTER);
+	}
+		
+
+
+
+	public void drawMap() {
+		center = new JPanel(new GridLayout(map.width(),map.height()));
+		for(int i = 0; i< map.width(); i++) {
+			for(int j = 0; j < map.height(); j++) {
+				final int x = i;
+				final int y = j;
+				JLabel label = new JLabel("");
+				label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				if(map.getCell(i, j).isWalkable()) label.setBackground(Color.white);
+				else  label.setBackground(Color.red);
+				label.setOpaque(true);
+			    label.addMouseListener(new MouseAdapter() {
+			    	public void mouseClicked(MouseEvent evt) { 
+			    		String sep = System.lineSeparator();
+			    		if (evt != null && javax.swing.SwingUtilities.isLeftMouseButton(evt)) {
+			           if(label.getBackground()==Color.white) label.setBackground(Color.red);
+			           else label.setBackground(Color.white);
+			           
+			           log.append(sep + "You've pressed: cell " + x + "-" + y);
+
+			        } else {
+			        	 	log.append(sep + "You've right-pressed: cell " + x + "-" + y);
+			        		label.setBackground(Color.green);
+			        }
+			       }
+			    });
+			    center.add(label);
+			}
+		}
+		
+		center.setMinimumSize(new Dimension(200,200));
+		center.setMaximumSize(new Dimension(300,300));
+		body.add(center, BorderLayout.CENTER);
+		this.revalidate();
+		this.repaint();
 		
 	}
+	
+	public void redrawMap() {
+		body.remove(center);
+		center = new JPanel(new GridLayout(map.width(),map.height()));
+		for(int i = 0; i< map.width(); i++) {
+			for(int j = 0; j < map.height(); j++) {
+				final int x = i;
+				final int y = j;
+				JLabel label = new JLabel("");
+				label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				if(map.getCell(i, j).isWalkable()) label.setBackground(Color.white);
+				else  label.setBackground(Color.red);
+				label.setOpaque(true);
+			    label.addMouseListener(new MouseAdapter() {
+			    	public void mouseClicked(MouseEvent evt) { 
+			    		String sep = System.lineSeparator();
+			    		if (evt != null && javax.swing.SwingUtilities.isLeftMouseButton(evt)) {
+			           if(label.getBackground()==Color.white) label.setBackground(Color.red);
+			           else label.setBackground(Color.white);
+			           
+			           log.append(sep + "You've pressed: cell " + x + "-" + y);
+
+			        } else {
+			        	 	log.append(sep + "You've right-pressed: cell " + x + "-" + y);
+			        		label.setBackground(Color.green);
+			        }
+			       }
+			    });
+			    center.add(label);
+			}
+		}
+		
+		center.setMinimumSize(new Dimension(200,200));
+		center.setMaximumSize(new Dimension(300,300));
+		body.add(center, BorderLayout.CENTER);
+		this.revalidate();
+		this.repaint();
+		
+	}
+	
 }
