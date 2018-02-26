@@ -25,7 +25,6 @@ import business.CellEnd;
 import business.CellGround;
 import business.CellStart;
 import business.CellWall;
-import business.Map;
 import business.SimpleMap;
 
 /**
@@ -216,7 +215,7 @@ public class MainView extends JFrame {
 			        	 			if(s==null) {
 			        	 				label.setBackground(Color.green);
 			        	 				label.setText("S");
-			        	 				label.setHorizontalAlignment(label.CENTER);
+			        	 				label.setHorizontalAlignment(SwingConstants.CENTER);
 			        	 				map.setStart(x, y);
 			        	 			}
 			        	 			else {
@@ -231,7 +230,7 @@ public class MainView extends JFrame {
 			        	 			if(s==null) {
 			        	 				label.setBackground(Color.green);
 			        	 				label.setText("E");
-			        	 				label.setHorizontalAlignment(label.CENTER);
+			        	 				label.setHorizontalAlignment(SwingConstants.CENTER);
 			        	 				map.setEnd(x, y);
 			        	 			}
 			        	 			else {
@@ -292,12 +291,12 @@ public class MainView extends JFrame {
 				if(hasS&&(i==sX)&&(j==sY)) {
 					label.setBackground(Color.green);
 					label.setText("S");
-					label.setHorizontalAlignment(label.CENTER);
+					label.setHorizontalAlignment(SwingConstants.CENTER);
 				}
 				else if (hasE&&(i==eX)&&(j==eY)) {
 					label.setBackground(Color.green);
 					label.setText("E");
-					label.setHorizontalAlignment(label.CENTER);
+					label.setHorizontalAlignment(SwingConstants.CENTER);
 				}
 				
 				label.setOpaque(true);
@@ -330,7 +329,7 @@ public class MainView extends JFrame {
 			        	 			if(s==null) {
 			        	 				label.setBackground(Color.green);
 			        	 				label.setText("S");
-			        	 				label.setHorizontalAlignment(label.CENTER);
+			        	 				label.setHorizontalAlignment(SwingConstants.CENTER);
 			        	 				map.setStart(x, y);
 			        	 			}
 			        	 			else {
@@ -345,7 +344,7 @@ public class MainView extends JFrame {
 			        	 			if(s==null) {
 			        	 				label.setBackground(Color.green);
 			        	 				label.setText("E");
-			        	 				label.setHorizontalAlignment(label.CENTER);
+			        	 				label.setHorizontalAlignment(SwingConstants.CENTER);
 			        	 				map.setEnd(x, y);
 			        	 			}
 			        	 			else {
