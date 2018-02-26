@@ -1,8 +1,8 @@
 package business;
 
-public class CellWall extends Cell {
+public class CellStart extends Cell {
 
-	public CellWall(int i, int j) {
+	public CellStart(int i, int j) {
 		super(i, j);
 		// TODO Auto-generated constructor stub
 	}
