@@ -115,6 +115,8 @@ public class MainView extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				log.append(sep + "Erasing the map...");
+				map.clearMap();
+				redrawMap();
 			}
 			
 		});

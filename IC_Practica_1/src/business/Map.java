@@ -2,9 +2,9 @@ package business;
 
 public class Map {
 
-	private Cell[][] map;
-	private int x;
-	private int y;
+	protected Cell[][] map;
+	protected int x;
+	protected int y;
 	
 	public Map() {
 		x = 1;

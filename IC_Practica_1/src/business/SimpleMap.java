@@ -1,10 +1,13 @@
 package business;
 
+import java.util.ArrayList;
+
 public class SimpleMap extends Map {
 
 	private CellStart start;
 	
 	private CellEnd end;
+
 	
 	public SimpleMap(int i, int j) {
 		super(i,j);
@@ -16,16 +19,34 @@ public class SimpleMap extends Map {
 	}
 
 	private void randomize() {
+		
+		
 		for (int i = 0; i < this.width(); i++) {
 			for(int j = 0; j < this.height(); j++) {
 				double r = Math.random();
 				Cell c;
 				if(r>=0.3) c = new CellGround(i, j);
-				else c = new CellWall(i, j);
+				else 
+					c = new CellWall(i, j);
+				
 				this.setCell(c, i, j);
 			}
 		}
 	}
+	
+	@Override
+	public void clearMap() {
+		start = null;
+		end = null;
+		
+		for (int i = 0; i < this.width(); i++) {
+			for(int j = 0; j < this.height(); j++) {
+				CellGround c = new CellGround(i, j);
+				this.setCell(c, i, j);
+			}
+		}
+	}
+	
 	
 	public CellStart getStart(){
 		return this.start;
@@ -42,6 +63,21 @@ public class SimpleMap extends Map {
 	public void setEnd(int x, int y) {
 		end = new CellEnd(x,y);
 		this.setCell(end, x, y);
+	}
+	
+	public ArrayList<Cell> getObstacles() {
+		
+		ArrayList<Cell> obstacles = new ArrayList<Cell>();
+		
+		for(int i = 0; i < this.width(); i++) {
+			for (int j = 0; j < this.height(); j++) {
+				if (!getCell(i, j).isWalkable()) {
+					Cell c = getCell(i,j);
+					obstacles.add(c);
+				}
+			}
+		}
+		return obstacles;
 	}
 	
 }

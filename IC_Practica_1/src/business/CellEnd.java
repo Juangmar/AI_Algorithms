@@ -10,7 +10,7 @@ public class CellEnd extends Cell {
 	@Override
 	public boolean isWalkable() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }
