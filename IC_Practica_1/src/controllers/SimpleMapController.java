@@ -1,8 +1,6 @@
 package controllers;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,74 +27,68 @@ public class SimpleMapController {
 	 * or arraylist with the cells that forms the path between the two points.
 	 */
 	public static ArrayList<Cell> aStar(SimpleMap board) {
-		//ArrayList<Cell> result = new ArrayList<Cell>();
 		
-		ArrayList<Cell> open = new ArrayList<Cell>();
-			open.add(board.getStart());
+		if(board.getStart()==null || board.getEnd()==null) return null;
+		
+		
+		ArrayList<Cell> open = new ArrayList<Cell>(); 
+		open.add(board.getStart());
+		
 		ArrayList<Cell> closed = board.getObstacles();
 		
-		ArrayList<Cell> pathFollowed = new ArrayList<Cell>();
+		Map<Cell, Cell> cameFrom = new HashMap<Cell, Cell>();
 		
 		final Map<Cell, Double> g = new HashMap<Cell, Double>();
 		g.put(board.getStart(), 0.00);
 		
 		final Map<Cell, Double> f = new HashMap<Cell, Double>();
-		
-		boolean goalAchived = false;
-		boolean fail = false;
-		
-		final Comparator<Cell> comparator = new Comparator<Cell>() {
-	        /**
-	         * {@inheritDoc}
-	         */
-	        @Override
-	        public int compare(Cell o1, Cell o2) {
-	            if (f.get(o1) < f.get(o2))
-	                return -1;
-	            if (f.get(o2) < f.get(o1))
-	                return 1;
-	            return 0;
-	        }
-		};
+		f.put(board.getStart(), distanceTo(board.getStart(),board.getEnd()));
 		
 		
-		while(!goalAchived && (!fail)) {
-			final Cell current = open.get(0);
-			if(open.isEmpty()) fail = true;
-			else if ((current)==board.getEnd()) goalAchived=true; 
+		while(!open.isEmpty()) {
+			final Cell current = getMinimum(open, f);
+			
+			if(open.isEmpty()) return null;
+			else if ((current)==board.getEnd()) return reconstructedPath(board, board.getEnd(), cameFrom);
 			else {
-				open.remove(0);
+				open.remove(current);
 				closed.add(current);
 				
 				for (Cell ady : board.getAdyacentes(current)) {
-					if (closed.contains(ady)) continue;
 					
-					final double tenativeG = g.get(current) + distanceTo(current,ady);
+					if (closed.contains(ady) || !ady.isWalkable()) continue;
+					
+					double tempG = g.get(current) + distanceTo(current,ady);
 					
 					if(!open.contains(ady)) open.add(ady);
-					else if (tenativeG >= g.get(ady)) continue;
+					else if (tempG >= g.get(ady)) continue;
 					
-					pathFollowed.add(ady);
-					g.put(ady, tenativeG);
-					final double estimatedF = g.get(ady) + distanceTo(ady,board.getEnd());
+					cameFrom.put(ady, current);
+					
+					g.put(ady, tempG);
+					double estimatedF = g.get(ady) + distanceTo(ady, board.getEnd());
 					f.put(ady, estimatedF);
-					
-					Collections.sort(open, comparator);
 					
 					
 				}
 			}
 		}
 		
-		if(goalAchived) {
-			return reconstructedPath(board, pathFollowed);
-		}
-		else {
-			return new ArrayList<Cell>();
-		}
+		return null;
 	}
 	
 
+	private static Cell getMinimum(ArrayList<Cell> open, Map<Cell, Double> f ) {
+		double min = f.get(open.get(0));
+		Cell mincell = open.get(0);
+		for(Cell e : open) {
+			if (f.get(e) < min) {
+				mincell = e;
+				min = f.get(e);
+			}
+		}		
+		return mincell;
+	}
 	
 	private static double distanceTo(Cell or, Cell dest) {
 		double dist = Math.hypot(dest.getX()-or.getX(), dest.getY()-or.getY());
@@ -104,10 +96,16 @@ public class SimpleMapController {
 		return dist;
 	}
 	
-	private static ArrayList<Cell> reconstructedPath(SimpleMap board, ArrayList<Cell> pathFollowed){
+	private static ArrayList<Cell> reconstructedPath(SimpleMap board, Cell current, Map<Cell, Cell> cameFrom){
 		ArrayList<Cell> result = new ArrayList<Cell>();
 		
-		
+        while (current != null) {
+            Cell previous = current;
+            current = cameFrom.get(current);
+            if (current != null) {
+                result.add(previous);
+            }
+        }	
 		return result;
 	}
 }
