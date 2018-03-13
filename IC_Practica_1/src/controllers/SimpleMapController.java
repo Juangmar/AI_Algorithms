@@ -49,6 +49,7 @@ public class SimpleMapController {
 			final Cell current = getMinimum(open, f);
 			
 			if(open.isEmpty()) return null;
+			
 			else if ((current)==board.getEnd()) return reconstructedPath(board, board.getEnd(), cameFrom);
 			else {
 				open.remove(current);
@@ -61,12 +62,16 @@ public class SimpleMapController {
 					double tempG = g.get(current) + distanceTo(current,ady);
 					
 					if(!open.contains(ady)) open.add(ady);
+					
 					else if (tempG >= g.get(ady)) continue;
 					
 					cameFrom.put(ady, current);
 					
 					g.put(ady, tempG);
-					double estimatedF = g.get(ady) + distanceTo(ady, board.getEnd());
+					
+					double estimatedH = distanceTo(ady, board.getEnd());
+					
+					double estimatedF = g.get(ady) + estimatedH;
 					f.put(ady, estimatedF);
 					
 					
@@ -100,11 +105,9 @@ public class SimpleMapController {
 		ArrayList<Cell> result = new ArrayList<Cell>();
 		
         while (current != null) {
-            Cell previous = current;
-            current = cameFrom.get(current);
-            if (current != null) {
-                result.add(previous);
-            }
+            Cell previous = cameFrom.get(current);
+            result.add(current);
+            current = previous;
         }	
 		return result;
 	}

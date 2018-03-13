@@ -83,9 +83,9 @@ public class SimpleMap extends Map {
 	public ArrayList<Cell> getAdyacentes(Cell origen){
 		ArrayList<Cell> result = new ArrayList<Cell>();
 		
-		for (int i = origen.getY()-1; i<=origen.getY()+1; i++) {
-			for(int j = origen.getX()-1; j<=origen.getX()+1; j++) {
-				if(j>=0 && i>=0 && j<this.x && i<this.y && (i!=origen.getX()&&j!=origen.getY())) {
+		for (int i = origen.getX()-1; i<=origen.getX()+1; i++) {
+			for(int j = origen.getY()-1; j<=origen.getY()+1; j++) {
+				if(j>=0 && i>=0 && j<this.y && i<this.x && (map[i][j]!=origen)) {
 					result.add(this.map[i][j]);
 				}
 			}
