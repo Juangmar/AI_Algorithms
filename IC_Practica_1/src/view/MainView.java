@@ -14,8 +14,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -79,6 +77,7 @@ public class MainView extends JFrame {
 		this.add(body);
 	}
 	
+	@SuppressWarnings("unused")
 	private void generateNorth() {
 		JLabel north = new JLabel("A* pathfinding map.", SwingConstants.CENTER);
 		body.add(north, BorderLayout.NORTH);
@@ -101,7 +100,7 @@ public class MainView extends JFrame {
 					for(int i = 0; i < e.size(); i++) {
 						log.append(sep + e.get(i).getX() + "-" + e.get(i).getY());
 					}
-					redrawMap(e);
+					drawMap(e);
 				}
 				
 			}
@@ -178,7 +177,7 @@ public class MainView extends JFrame {
 		
 		map = new SimpleMap(10,10);
 		
-		drawMap();
+		drawMap(null);
 		
 		center.setMinimumSize(new Dimension(200,200));
 		center.setMaximumSize(new Dimension(300,300));
@@ -187,100 +186,13 @@ public class MainView extends JFrame {
 	}
 		
 
-
-
-	public void drawMap() {
-		center = new JPanel(new GridLayout(map.width(),map.height()));
-		for(int i = 0; i< map.width(); i++) {
-			for(int j = 0; j < map.height(); j++) {
-				final int x = i;
-				final int y = j;
-				JLabel label = new JLabel(i + "-" + j);
-				label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-				if(map.getCell(i, j) instanceof CellEnd) {
-					label.setText(i + "-" + j + "- E");
-					label.setBackground(Color.green);
-				}
-				else if (map.getCell(i, j) instanceof CellStart) {
-					label.setText(i + "-" + j + "- S");
-					label.setBackground(Color.green);
-				}
-				else if(map.getCell(i, j).isWalkable()) label.setBackground(Color.white);
-				else label.setBackground(Color.red);
-				label.setOpaque(true);
-			    label.addMouseListener(new MouseAdapter() {
-			    	public void mouseClicked(MouseEvent evt) { 
-			    		String sep = System.lineSeparator();
-			    		Cell c = map.getCell(x, y);
-			    		if (evt != null && javax.swing.SwingUtilities.isLeftMouseButton(evt)) {
-			    			if((!(c instanceof CellStart))&&(!(c instanceof CellEnd))) {
-			    				if(map.getCell(x, y) instanceof CellGround) {
-			    					CellWall w = new CellWall(x,y);
-			    					map.setCell(w, x, y);
-			    				}
-			    				else {
-			    					CellGround g = new CellGround(x,y);
-			    					map.setCell(g, x, y);
-			    				}
-			           
-			    				log.append(sep + "You've pressed: cell " + x + "-" + y);
-			    			}
-			    			else {
-			    				log.append(sep + "You can't place walls or ground there!");
-			    			}
-
-			        } else {
-			        	 	log.append(sep + "You've right-pressed: cell " + x + "-" + y);
-			        	 	if(map.getCell(x, y).isWalkable()) {
-			        	 		if(setStartNow) {
-			        	 			CellStart s = map.getStart();
-			        	 			if(s==null) {
-			        	 				map.setStart(x, y);
-			        	 			}
-			        	 			else {
-			        	 				CellGround g = new CellGround(s.getX(), s.getY());
-			        	 				map.setCell(g, s.getX(), s.getY());
-			        	 				map.setStart(x, y);
-			        	 			}
-			        	 			setStartNow=false;
-			        	 		}
-			        	 		else {
-			        	 			CellEnd s = map.getEnd();
-			        	 			if(s==null) {
-			        	 				map.setEnd(x, y);
-			        	 			}
-			        	 			else {
-			        	 				CellGround g = new CellGround(s.getX(), s.getY());
-			        	 				map.setCell(g, s.getX(), s.getY());
-			        	 				map.setEnd(x, y);
-			        	 			}
-			        	 			setStartNow = true;
-			        	 		}
-			        	 	}else {
-			        	 		log.append(sep + "You can't set that in a wall!");
-			        	 	}
-			        }
-			    		redrawMap();
-			       }
-			    });
-			    center.add(label);
-			}
-		}
-		
-		center.setMinimumSize(new Dimension(200,200));
-		center.setMaximumSize(new Dimension(300,300));
-		body.add(center, BorderLayout.CENTER);
-		this.revalidate();
-		this.repaint();
-		
-	}
 	
 	public void redrawMap() {
 		body.remove(center);
-		drawMap();
+		drawMap(null);
 		
 	}
-	public void redrawMap(ArrayList<Cell> path) {
+	public void drawMap(ArrayList<Cell> path) {
 		body.remove(center);
 		center = new JPanel(new GridLayout(map.width(),map.height()));
 		CellStart s = map.getStart();
@@ -302,7 +214,7 @@ public class MainView extends JFrame {
 			for(int j = 0; j < map.height(); j++) {
 				final int x = i;
 				final int y = j;
-				JLabel label = new JLabel(i + "-" + j);
+				JLabel label = new JLabel("");
 				label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				
 				if(path.contains(map.getCell(i,j))) label.setBackground(Color.black);
@@ -313,11 +225,13 @@ public class MainView extends JFrame {
 				
 				if(hasS&&(i==sX)&&(j==sY)) {
 					label.setBackground(Color.green);
-					label.setText(i + "-" + j + "- S");
+					label.setText("S");
+					label.setHorizontalAlignment(JLabel.CENTER);
 				}
 				else if (hasE&&(i==eX)&&(j==eY)) {
 					label.setBackground(Color.green);
-					label.setText(i + "-" + j + "- E");
+					label.setText("E");
+					label.setHorizontalAlignment(JLabel.CENTER);
 				}
 				
 				label.setOpaque(true);
