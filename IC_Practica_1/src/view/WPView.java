@@ -25,14 +25,15 @@ import business.CellEnd;
 import business.CellGround;
 import business.CellStart;
 import business.CellWall;
-import business.SimpleMap;
-import controllers.SimpleMapController;
+import business.CellWayPoint;
+import business.WayPointMap;
+import controllers.WayMapController;
 
 /**
  * @author Juan Gómez-Martinho González
  *
  */
-public class MainView extends JFrame {
+public class WPView extends JFrame {
 
 	/**
 	 *  generated to supress warnings
@@ -43,12 +44,10 @@ public class MainView extends JFrame {
 	private JTextArea log;
 	private JPanel center;
 
-	private SimpleMap map;
-	
-	private boolean setStartNow;
+	private WayPointMap map;
 	
 	
-	public MainView() {
+	public WPView() {
 		super();
 	    this.setTitle("Pathfinder - A*");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -56,7 +55,6 @@ public class MainView extends JFrame {
 		this.setSize(700,550);
 		this.setResizable(false);
 		this.setMinimumSize(new Dimension(200,200));
-		this.setStartNow = true;
 		/*
 		JMenuBar m = new JMenuBar();
 		JMenu one = new JMenu("File");
@@ -95,7 +93,7 @@ public class MainView extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				log.append(sep + "Calculating path...");
-				ArrayList<Cell> e = SimpleMapController.aStar(map);
+				ArrayList<Cell> e = WayMapController.stepAStar(map);
 				if(e == null) {log.append(sep + "No path avilable!");}else {
 					for(int i = 0; i < e.size(); i++) {
 						log.append(sep + e.get(i).getX() + "-" + e.get(i).getY());
@@ -139,7 +137,7 @@ public class MainView extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				log.append(sep + "Randomizing the map...");
-				map = new SimpleMap(map.width(),map.height());
+				map = new WayPointMap(map.width(),map.height());
 				redrawMap(null);
 			}
 			
@@ -175,7 +173,7 @@ public class MainView extends JFrame {
 	
 	private void generateCenter() {
 		
-		map = new SimpleMap(10,10);
+		map = new WayPointMap(10,10);
 		
 		drawMap(null);
 		
@@ -221,6 +219,11 @@ public class MainView extends JFrame {
 				else  label.setBackground(Color.red);
 				
 
+				if(map.getCell(i,j) instanceof CellWayPoint) {
+					label.setBackground(Color.MAGENTA);
+					label.setText(Integer.toString(map.getIndexOfPoint((CellWayPoint)map.getCell(i,j))));
+					label.setHorizontalAlignment(JLabel.CENTER);
+				}
 				
 				if(hasS&&(i==sX)&&(j==sY)) {
 					label.setBackground(Color.green);
@@ -257,39 +260,14 @@ public class MainView extends JFrame {
 
 			        } else {
 			        	 	log.append(sep + "You've right-pressed: cell " + x + "-" + y);
-			        	 	if(map.getCell(x, y).isWalkable()) {
-			        	 		if(setStartNow) {
-			        	 			CellStart s = map.getStart();
-			        	 			if(s==null) {
-			        	 				label.setBackground(Color.green);
-			        	 				label.setText("S");
-			        	 				label.setHorizontalAlignment(SwingConstants.CENTER);
-			        	 				map.setStart(x, y);
-			        	 			}
-			        	 			else {
-			        	 				CellGround g = new CellGround(s.getX(), s.getY());
-			        	 				map.setCell(g, s.getX(), s.getY());
-			        	 				map.setStart(x, y);
-			        	 			}
-			        	 			setStartNow=false;
-			        	 		}
-			        	 		else {
-			        	 			CellEnd s = map.getEnd();
-			        	 			if(s==null) {
-			        	 				label.setBackground(Color.green);
-			        	 				label.setText("E");
-			        	 				label.setHorizontalAlignment(SwingConstants.CENTER);
-			        	 				map.setEnd(x, y);
-			        	 			}
-			        	 			else {
-			        	 				CellGround g = new CellGround(s.getX(), s.getY());
-			        	 				map.setCell(g, s.getX(), s.getY());
-			        	 				map.setEnd(x, y);
-			        	 			}
-			        	 			setStartNow = true;
-			        	 		}
-			        	 	}else {
-			        	 		log.append(sep + "You can't set that in a wall!");
+			        	 	if(map.getCell(x, y) instanceof CellWayPoint) {
+			        	 			map.deleteWayPoint(x,y);
+			        	 	}
+			        	 	else if (map.getCell(x, y).isWalkable()){
+			        	 			map.addWayPoint(x,y);
+			        	 	}
+			        	 	else {
+			        	 		log.append(sep + "You can't set that there!");
 			        	 	}
 			        }
 			    		redrawMap(null);

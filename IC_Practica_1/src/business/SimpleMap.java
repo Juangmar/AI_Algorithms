@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class SimpleMap extends Map {
 
-	private CellStart start;
+	protected CellStart start;
 	
-	private CellEnd end;
+	protected CellEnd end;
 
 	
 	public SimpleMap(int i, int j) {
@@ -18,7 +18,7 @@ public class SimpleMap extends Map {
 		randomize();
 	}
 
-	private void randomize() {
+	public void randomize() {
 		
 		
 		for (int i = 0; i < this.width(); i++) {
@@ -81,7 +81,9 @@ public class SimpleMap extends Map {
 	}
 	
 	public ArrayList<Cell> getAdyacentes(Cell origen){
+		
 		ArrayList<Cell> result = new ArrayList<Cell>();
+		if (origen == null) return result;
 		
 		for (int i = origen.getX()-1; i<=origen.getX()+1; i++) {
 			for(int j = origen.getY()-1; j<=origen.getY()+1; j++) {

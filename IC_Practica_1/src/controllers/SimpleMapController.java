@@ -47,17 +47,14 @@ public class SimpleMapController {
 		
 		while(!open.isEmpty()) {
 			final Cell current = getMinimum(open, f);
-			
-			if(open.isEmpty()) return null;
-			
-			else if ((current)==board.getEnd()) return reconstructedPath(board, board.getEnd(), cameFrom);
+			if ((current)==board.getEnd()) return reconstructedPath(board.getEnd(), cameFrom);
 			else {
 				open.remove(current);
 				closed.add(current);
 				
 				for (Cell ady : board.getAdyacentes(current)) {
 					
-					if (closed.contains(ady) || !ady.isWalkable()) continue;
+					if (closed.contains(ady)) continue;
 					
 					double tempG = g.get(current) + distanceTo(current,ady);
 					
@@ -82,8 +79,60 @@ public class SimpleMapController {
 		return null;
 	}
 	
+public static ArrayList<Cell> aStar(SimpleMap board, Cell start, Cell finish) {
+		
+		if(start==null || finish==null) return null;
+		
+		
+		ArrayList<Cell> open = new ArrayList<Cell>(); 
+		open.add(start);
+		
+		ArrayList<Cell> closed = board.getObstacles();
+		
+		Map<Cell, Cell> cameFrom = new HashMap<Cell, Cell>();
+		
+		final Map<Cell, Double> g = new HashMap<Cell, Double>();
+		g.put(start, 0.00);
+		
+		final Map<Cell, Double> f = new HashMap<Cell, Double>();
+		f.put(start, distanceTo(start,finish));
+		
+		
+		while(!open.isEmpty()) {
+			final Cell current = getMinimum(open, f);
+			if ((current)==finish) return reconstructedPath(finish, cameFrom);
+			else {
+				open.remove(current);
+				closed.add(current);
+				
+				for (Cell ady : board.getAdyacentes(current)) {
+					
+					if (closed.contains(ady)) continue;
+					
+					double tempG = g.get(current) + distanceTo(current,ady);
+					
+					if(!open.contains(ady)) open.add(ady);
+					
+					else if (tempG >= g.get(ady)) continue;
+					
+					cameFrom.put(ady, current);
+					
+					g.put(ady, tempG);
+					
+					double estimatedH = distanceTo(ady, finish);
+					
+					double estimatedF = g.get(ady) + estimatedH;
+					f.put(ady, estimatedF);
+					
+					
+				}
+			}
+		}
+		
+		return null;
+	}
 
-	private static Cell getMinimum(ArrayList<Cell> open, Map<Cell, Double> f ) {
+	protected static Cell getMinimum(ArrayList<Cell> open, Map<Cell, Double> f ) {
 		double min = f.get(open.get(0));
 		Cell mincell = open.get(0);
 		for(Cell e : open) {
@@ -95,13 +144,13 @@ public class SimpleMapController {
 		return mincell;
 	}
 	
-	private static double distanceTo(Cell or, Cell dest) {
+	protected static double distanceTo(Cell or, Cell dest) {
 		double dist = Math.hypot(dest.getX()-or.getX(), dest.getY()-or.getY());
 		
 		return dist;
 	}
 	
-	private static ArrayList<Cell> reconstructedPath(SimpleMap board, Cell current, Map<Cell, Cell> cameFrom){
+	protected static ArrayList<Cell> reconstructedPath(Cell current, Map<Cell, Cell> cameFrom){
 		ArrayList<Cell> result = new ArrayList<Cell>();
 		
         while (current != null) {
