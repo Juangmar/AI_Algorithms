@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -24,6 +25,7 @@ import business.Cell;
 import business.CellHeight;
 import business.CellHeightWayPoint;
 import business.ThreeDMap;
+import controllers.HeightMapController;
 
 /**
  * @author Juan Gómez-Martinho González
@@ -88,15 +90,25 @@ public class HGView extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				log.append(sep + "Calculating path...");
-				/* ArrayList<Cell> e = WayMapController.stepAStar(map);
-				if(e == null) {log.append(sep + "No path avilable!");}else {
-					for(int i = 0; i < e.size(); i++) {
-						log.append(sep + e.get(i).getX() + "-" + e.get(i).getY());
+				
+				String c = JOptionPane.showInputDialog("Type the maximum slope:");
+				try {
+					int max = Integer.parseInt(c);
+					log.append(sep + "Calculating path...");
+					ArrayList<Cell> e = HeightMapController.heightAStar(map, max);
+					if(e == null) {
+						log.append(sep + "No path avilable!");
+					
+					}else {
+						for(int i = 0; i < e.size(); i++) {
+							log.append(sep + e.get(i).getX() + "-" + e.get(i).getY());
+						}
+						
 					}
 					redrawMap(e);
-				}*/
-				
+				}catch (NumberFormatException e) {
+					log.append(sep + "Type a valid integer!");
+				}
 			}
 			
 		});
@@ -197,7 +209,7 @@ public class HGView extends JFrame {
 				JLabel label = new JLabel("");
 				label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				
-				if(path!=null&&path.contains(map.getCell(i,j))) label.setBackground(Color.black);
+				
 				double height = (double)(((CellHeight) map.getCell(i, j)).getHeight())/100;
 				label.setBackground(new Color (0,255,(int) (255*height)));
 				label.setText(Integer.toString((int) (height*100)));
@@ -210,7 +222,10 @@ public class HGView extends JFrame {
 							+ " - " +Integer.toString((int) (height*100)));
 					label.setHorizontalAlignment(JLabel.CENTER);
 				}
-				
+				if(path!=null&&path.contains(map.getCell(i,j))) {
+					label.setBackground(Color.DARK_GRAY);
+					label.setForeground(Color.white);
+				}
 				label.setOpaque(true);
 			    label.addMouseListener(new MouseAdapter() {
 			    	public void mouseClicked(MouseEvent evt) { 
