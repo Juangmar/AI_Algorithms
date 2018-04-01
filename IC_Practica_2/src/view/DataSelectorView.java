@@ -113,7 +113,6 @@ public class DataSelectorView extends JFrame {
 					ApplicationController c = new ApplicationController();
 					c.decitionTree(name, val);
 				}
-				dispose();
 			}
 			
 		});
