@@ -2,11 +2,13 @@ package data;
 
 public class Node {
 	private String name;
-	private Vertex[] vertex;
+	private Vertex[] sons;
+	private Node father;
 	
-	public Node(String value, Vertex[] object) {
+	public Node(String value, Vertex[] object, Node father) {
 		name = value;
-		vertex = object;
+		sons = object;
+		this.father = father;
 	}
 	
 }

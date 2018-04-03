@@ -1,5 +1,7 @@
 package business;
 
+import java.util.HashMap;
+
 import data.Node;
 
 public class DataManager {
@@ -25,28 +27,30 @@ public class DataManager {
 		return result;
 	}
 	
-	private Node recursiveID3(Node previousTree, String[] names, String[][] attributes) throws Exception {
-		if (attributes.length==0) return previousTree;
+	private Node recursiveID3(Node previous, String[] names, String[][] attributes) throws Exception {
+		if (attributes.length==0) return previous;
 		else if (names.length==0) throw new Exception();
-		else if (allPositive(attributes)) return new Node(positive, null);
-		else if (allNegative(attributes)) return new Node(negative, null);
+		else if (allPositive(attributes)) return new Node(positive, null, previous);
+		else if (allNegative(attributes)) return new Node(negative, null, previous);
 		else {
-			
+			double better = 1;
+			for (int i = 0; i < attributes.length; i++) {
+				
+				String name = names[i];
+				int N = attributes[i].length;
+				HashMap<String, Double> p = new HashMap<String, Double>();
+				HashMap<String, Double> n = new HashMap<String, Double>();
+				HashMap<String, Double> r = new HashMap<String, Double>();
+				/*
+				 * Hay que sacar de cada valor de atributo: Valor, p, n, r
+				 */
+				
+				for (int j = 0; j < attributes[i].length; j++) {
+					
+				}
+								
+			}
 		}
-		/*
-		else{
-			buscar (mejorMérito, índice) --> for each atributo calcular su mérito, si mejor sustituir.
-			
-			mejor --> Raíz de árbol. Para cada valor del nodo:
-				* incluir en ejemplos-restantes los elementos de lista-ejemplos
-					que tengan valor vi del atributo mejor.
-		 		* dejar en atributos-restantes todos los elementos de lista-atributos
-				  	excepto mejor.
-		 		* devolver el valor de:
-				  	ID3 (ejemplos-restantes, atributos-restantes) 
-				  	(llamada recursiva al algoritmo)
-		}
-		*/
 		
 		return null;
 	}
