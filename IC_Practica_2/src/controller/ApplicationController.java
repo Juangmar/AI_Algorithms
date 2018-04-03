@@ -1,8 +1,6 @@
 package controller;
 
 import java.io.File;
-import java.util.HashMap;
-
 import business.DataManager;
 import integration.AttributesNames;
 import integration.AttributesValues;
@@ -17,20 +15,20 @@ public class ApplicationController {
 		String[] n = i.load(e);
 		return n;
 	}
-	public HashMap<String, Integer>[] loadValues(File e, String[] names) {
-		AttributesValues i = new AttributesValues(); 
-		
-		for(int j = 0; j < names.length; j++) {
-			// Cargar el atributo correspondiente
+	public String[][] loadValues(File e, String[] names) {
+		AttributesValues v = new AttributesValues();
+		int nv = v.numberOfAttributes(e);
+		if(nv!=names.length) return null;
+		else {
+			String[][] n = v.load(e);
+			return n;
 		}
-		
-		return null;
 	}
 	
 	public Object decitionTree(File attributesNames, File attributesValues) {
 		String[] names = loadNames(attributesNames);
 		if(names!=null) {
-			HashMap<String, Integer>[] attributes = loadValues(attributesValues, names);
+			String[][] attributes = loadValues(attributesValues, names);
 			if(attributes!=null) {
 				DataManager m = new DataManager();
 				Object tree = m.id3(names, attributes);
