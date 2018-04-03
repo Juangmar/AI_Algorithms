@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import business.DataManager;
+import data.Node;
 import integration.AttributesNames;
 import integration.AttributesValues;
 
@@ -31,7 +32,7 @@ public class ApplicationController {
 			String[][] attributes = loadValues(attributesValues, names);
 			if(attributes!=null) {
 				DataManager m = new DataManager();
-				Object tree = m.id3(names, attributes);
+				Node tree = m.id3(names, attributes);
 				return tree;
 			} else return null;
 		}else {
