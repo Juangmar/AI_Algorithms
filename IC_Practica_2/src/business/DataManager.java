@@ -1,8 +1,9 @@
 package business;
 
 import java.util.HashMap;
-
+import java.util.Map.Entry;
 import data.Node;
+import data.Vertex;
 
 public class DataManager {
 
@@ -19,7 +20,6 @@ public class DataManager {
 		try {
 			result = recursiveID3(previousTree, names, attributes);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -33,19 +33,15 @@ public class DataManager {
 		else if (allPositive(attributes)) return new Node(positive, null, previous);
 		else if (allNegative(attributes)) return new Node(negative, null, previous);
 		else {
-			
 			double best = 1;
-			String bestName;
-			String[] values;
-			
-			for (int i = 0; i < attributes.length; i++) {
-				
+			String bestName = "";
+			String[] values = null;
+			for (int i = 0; i < attributes.length; i++) {	
 				String name = names[i];
 				int N = attributes[i].length;
 				HashMap<String, Integer> pApariciones = new HashMap<String, Integer>();
 				HashMap<String, Integer> nApariciones = new HashMap<String, Integer>();
 				HashMap<String, Integer> a = new HashMap<String, Integer>();
-				
 				for (int j = 0; j < attributes[i].length; j++) {
 					if(!a.containsKey(attributes[i][j])) {
 						a.put(attributes[i][j], 1);
@@ -65,33 +61,44 @@ public class DataManager {
 						else throw new Exception();
 					}
 				}
-				
-				/*	At this point, we have the a of each value, the posApperience and the negApperience.
-					We have to compute now:
-						p for each value
-						n for each value
-						r for each value
-						m = sum(r*infor(p,n))
-						if m<best 
-							best = m
-							bestName = name
-							values = allValues names
-				*/
-				
-								
+				double total = 0;
+				String[] tempValues = new String[a.size()];
+				int index = 0;
+				for(Entry<String, Integer> entry : a.entrySet()) {
+					double p = (double) pApariciones.get(entry.getKey()) / (double) entry.getValue();
+					double n = (double) nApariciones.get(entry.getKey()) / (double) entry.getValue();
+					double r = (p + n) / N;
+					total += r*infor(p,n);
+					tempValues[index] = entry.getKey();
+					index++;	
+				}
+				if (total < best) {
+					best = total;
+					bestName = name;
+					values = tempValues;
+				} 
 			}
-			
-			/*	we have the best attribute possible. Now we have to construct:
-			 *		The node N with name bestName
-			 *			It's vertex with values[]
-			 *			For each vertex, 
-			 *				end = recursiveID3(N, names without selected name, attributes without the attribute and the rows that satisfy the current value)
-			*/
-			
+			Node res = new Node(bestName);
+			for(String val : values) {
+				Vertex v = new Vertex(val);
+				v.setCameFrom(res);
+				String[] newNames = new String[names.length-1];
+				int next = 0;
+				for(int x = 0; x < names.length; x++) {
+					if(!names[x].equals(bestName)) {
+						newNames[next] = names[x];
+						next++;
+					}
+				}
+				String[][] newAttributes = new String[newNames.length][];
+				
+				// create newAttributes without the attribute and the rows that satisfy the current value
+				
+				v.setNext(recursiveID3(res,newNames, newAttributes));
+				res.addVertex(v);
+			}
+			return res;
 		}
-		
-		//return node N when declared
-		return null;
 	}
 	
 	
