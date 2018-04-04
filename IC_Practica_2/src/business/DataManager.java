@@ -29,31 +29,72 @@ public class DataManager {
 	
 	private Node recursiveID3(Node previous, String[] names, String[][] attributes) throws Exception {
 		if (attributes.length==0) return previous;
-		else if (names.length==0) throw new Exception();
+		else if (names.length==1) throw new Exception(); //The last name possible is the result y (yes/No)
 		else if (allPositive(attributes)) return new Node(positive, null, previous);
 		else if (allNegative(attributes)) return new Node(negative, null, previous);
 		else {
-			double better = 1;
+			
+			double best = 1;
+			String bestName;
+			String[] values;
+			
 			for (int i = 0; i < attributes.length; i++) {
 				
 				String name = names[i];
 				int N = attributes[i].length;
-				HashMap<String, Double> p = new HashMap<String, Double>();
-				HashMap<String, Double> n = new HashMap<String, Double>();
-				HashMap<String, Double> r = new HashMap<String, Double>();
-				/*
-				 * Hay que sacar de cada valor de atributo: Valor, p, n, r
-				 */
+				HashMap<String, Integer> pApariciones = new HashMap<String, Integer>();
+				HashMap<String, Integer> nApariciones = new HashMap<String, Integer>();
+				HashMap<String, Integer> a = new HashMap<String, Integer>();
 				
 				for (int j = 0; j < attributes[i].length; j++) {
-					
+					if(!a.containsKey(attributes[i][j])) {
+						a.put(attributes[i][j], 1);
+						if(attributes[i][names.length-1].equals(positive)) pApariciones.put(attributes[i][j], 1);
+						else if (attributes[i][names.length-1].equals(negative)) nApariciones.put(attributes[i][j], 1);
+						else throw new Exception();
+					}
+					else {
+						if(attributes[i][names.length-1].equals(positive)) {
+							int newVal = pApariciones.get(attributes[i][j]) + 1;
+							pApariciones.put(attributes[i][j], newVal);
+						}
+						else if (attributes[i][names.length-1].equals(negative)) {
+							int newVal = nApariciones.get(attributes[i][j]) + 1;
+							nApariciones.put(attributes[i][j], newVal);
+						}
+						else throw new Exception();
+					}
 				}
+				
+				/*	At this point, we have the a of each value, the posApperience and the negApperience.
+					We have to compute now:
+						p for each value
+						n for each value
+						r for each value
+						m = sum(r*infor(p,n))
+						if m<best 
+							best = m
+							bestName = name
+							values = allValues names
+				*/
+				
 								
 			}
+			
+			/*	we have the best attribute possible. Now we have to construct:
+			 *		The node N with name bestName
+			 *			It's vertex with values[]
+			 *			For each vertex, 
+			 *				end = recursiveID3(N, names without selected name, attributes without the attribute and the rows that satisfy the current value)
+			*/
+			
 		}
 		
+		//return node N when declared
 		return null;
 	}
+	
+	
 	private boolean allPositive (String[][] attributes) {
 		boolean allPositives = true;
 		for (int i = 0; i< attributes.length; i++) {
