@@ -33,23 +33,36 @@ public class DataManager {
 		else if (allPositive(attributes)) return new Node(positive, null, previous);
 		else if (allNegative(attributes)) return new Node(negative, null, previous);
 		else {
-			double best = 1;
+			double best = 0;
 			String bestName = "";
 			String[] values = null;
-			for (int i = 0; i < attributes.length; i++) {	
-				String name = names[i];
-				int N = attributes[i].length;
+			int bestAttrIndex = 0;
+			for (int j = 0; j < attributes[j].length; j++) {
+			
+				String name = names[j];
+				int N = attributes.length;
 				HashMap<String, Integer> pApariciones = new HashMap<String, Integer>();
 				HashMap<String, Integer> nApariciones = new HashMap<String, Integer>();
 				HashMap<String, Integer> a = new HashMap<String, Integer>();
-				for (int j = 0; j < attributes[i].length; j++) {
+				for (int i = 0; i < attributes.length; i++) {	
+					System.out.println(attributes[i][j]);
 					if(!a.containsKey(attributes[i][j])) {
 						a.put(attributes[i][j], 1);
-						if(attributes[i][names.length-1].equals(positive)) pApariciones.put(attributes[i][j], 1);
-						else if (attributes[i][names.length-1].equals(negative)) nApariciones.put(attributes[i][j], 1);
+						if(attributes[i][names.length-1].equals(positive)) {
+							pApariciones.put(attributes[i][j], 1);
+							nApariciones.put(attributes[i][j], 0);
+							
+						}
+						else if (attributes[i][names.length-1].equals(negative)) {
+							nApariciones.put(attributes[i][j], 1);
+							pApariciones.put(attributes[i][j], 0);
+						}
 						else throw new Exception();
 					}
 					else {
+						int newA = a.get(attributes[i][j]) + 1;
+						a.put(attributes[i][j], newA);
+						
 						if(attributes[i][names.length-1].equals(positive)) {
 							int newVal = pApariciones.get(attributes[i][j]) + 1;
 							pApariciones.put(attributes[i][j], newVal);
@@ -67,16 +80,19 @@ public class DataManager {
 				for(Entry<String, Integer> entry : a.entrySet()) {
 					double p = (double) pApariciones.get(entry.getKey()) / (double) entry.getValue();
 					double n = (double) nApariciones.get(entry.getKey()) / (double) entry.getValue();
-					double r = (p + n) / N;
-					total += r*infor(p,n);
+					double r = (pApariciones.get(entry.getKey()) + nApariciones.get(entry.getKey())) / (double) N;
+					double res =  r*infor(p,n);
+					total = total + res;
 					tempValues[index] = entry.getKey();
 					index++;	
+					
 				}
-				if (total < best) {
+				if (total > best) {
 					best = total;
 					bestName = name;
 					values = tempValues;
-				} 
+					bestAttrIndex = j;
+				}
 			}
 			Node res = new Node(bestName);
 			for(String val : values) {
@@ -91,9 +107,15 @@ public class DataManager {
 					}
 				}
 				String[][] newAttributes = new String[newNames.length][];
-				
-				// create newAttributes without the attribute and the rows that satisfy the current value
-				
+				int nextRow = 0;
+				for (int i = 0; i < attributes.length; i++) {
+					if(attributes[bestAttrIndex][i].equals(bestName)) {
+						for (int j = 0; j < attributes[i].length; j++) {
+							newAttributes[nextRow][j] = attributes[nextRow][j];
+							nextRow++;
+						}
+					}
+				}
 				v.setNext(recursiveID3(res,newNames, newAttributes));
 				res.addVertex(v);
 			}
@@ -118,8 +140,21 @@ public class DataManager {
 	}
 	
 	public double infor(double p, double n) {
+		
 		double result = -1;
-		result = (-p*(Math.log(p)/Math.log(2))) - (-n*(Math.log(n)/Math.log(2)));
+		
+		double first = 0;
+		if (p != 0) {
+			first = (-p * (Math.log(p)/Math.log(2)));
+		}
+		
+		double second = 0;
+		if (n != 0) {
+			second = (-n * (Math.log(n)/Math.log(2)));
+		}
+		
+		result = first + second;
+		
 		return result;
 	}
 	
