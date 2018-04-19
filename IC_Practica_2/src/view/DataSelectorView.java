@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controller.ApplicationController;
+import data.Node;
 
 @SuppressWarnings("serial")
 public class DataSelectorView extends JFrame {
@@ -111,7 +112,8 @@ public class DataSelectorView extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if(name!=null && val!=null) {
 					ApplicationController c = new ApplicationController();
-					c.decitionTree(name, val);
+					Node tree = c.decitionTree(name, val);
+					System.out.println(tree);
 				}
 			}
 			

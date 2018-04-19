@@ -26,7 +26,7 @@ public class ApplicationController {
 		}
 	}
 	
-	public Object decitionTree(File attributesNames, File attributesValues) {
+	public Node decitionTree(File attributesNames, File attributesValues) {
 		String[] names = loadNames(attributesNames);
 		if(names!=null) {
 			String[][] attributes = loadValues(attributesValues, names);

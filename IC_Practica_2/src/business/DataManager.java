@@ -33,7 +33,7 @@ public class DataManager {
 		else if (allPositive(attributes)) return new Node(positive, null, previous);
 		else if (allNegative(attributes)) return new Node(negative, null, previous);
 		else {
-			double best = 0;
+			double best = 10;
 			String bestName = "";
 			String[] values = null;
 			int bestAttrIndex = 0;
@@ -85,9 +85,8 @@ public class DataManager {
 					total = total + res;
 					tempValues[index] = entry.getKey();
 					index++;	
-					
 				}
-				if (total > best) {
+				if (total < best && !name.equals("Jugar")) {
 					best = total;
 					bestName = name;
 					values = tempValues;
@@ -98,25 +97,20 @@ public class DataManager {
 			for(String val : values) {
 				Vertex v = new Vertex(val);
 				v.setCameFrom(res);
-				String[] newNames = new String[names.length-1];
-				int next = 0;
-				for(int x = 0; x < names.length; x++) {
-					if(!names[x].equals(bestName)) {
-						newNames[next] = names[x];
-						next++;
-					}
-				}
-				String[][] newAttributes = new String[newNames.length][];
+				String[][] newAttributes = new String[attributes.length][];
 				int nextRow = 0;
 				for (int i = 0; i < attributes.length; i++) {
-					if(attributes[bestAttrIndex][i].equals(bestName)) {
-						for (int j = 0; j < attributes[i].length; j++) {
-							newAttributes[nextRow][j] = attributes[nextRow][j];
+					String temp = attributes[i][bestAttrIndex];
+					if(temp.equals(val)) {
+							newAttributes[nextRow] = attributes[i];
 							nextRow++;
-						}
 					}
 				}
-				v.setNext(recursiveID3(res,newNames, newAttributes));
+				String[][] nextStepAttributes = new String[nextRow][];
+				for (int i = 0; i < nextRow; i++) {
+					nextStepAttributes[i] = newAttributes[i];
+				}
+				v.setNext(recursiveID3(res,names, nextStepAttributes));
 				res.addVertex(v);
 			}
 			return res;
