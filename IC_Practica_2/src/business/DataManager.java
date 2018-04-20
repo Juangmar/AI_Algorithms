@@ -37,7 +37,7 @@ public class DataManager {
 			String bestName = "";
 			String[] values = null;
 			int bestAttrIndex = 0;
-			for (int j = 0; j < attributes[j].length; j++) {
+			for (int j = 0; j < attributes[0].length; j++) {
 			
 				String name = names[j];
 				int N = attributes.length;
@@ -45,7 +45,6 @@ public class DataManager {
 				HashMap<String, Integer> nApariciones = new HashMap<String, Integer>();
 				HashMap<String, Integer> a = new HashMap<String, Integer>();
 				for (int i = 0; i < attributes.length; i++) {	
-					System.out.println(attributes[i][j]);
 					if(!a.containsKey(attributes[i][j])) {
 						a.put(attributes[i][j], 1);
 						if(attributes[i][names.length-1].equals(positive)) {
