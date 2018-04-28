@@ -23,7 +23,8 @@ import data.Node;
 import data.Vertex;
 
 /**
- * @author Juan Gómez-Martinnho González
+ * Main view. Manages all program's data
+ * @author Juan Gomez-Martinnho Gonzalez
  *
  */
 @SuppressWarnings("serial")

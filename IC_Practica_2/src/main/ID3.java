@@ -4,7 +4,8 @@ import javax.swing.JFrame;
 import view.DataSelectorView;
 
 /**
- * @author Juan Gómez-Martinho
+ * Main class. Creates a view and makes it visible.
+ * @author Juan Gomez-Martinho Gonzalez
  *
  */
 public class ID3 {
