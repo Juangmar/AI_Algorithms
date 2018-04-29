@@ -30,22 +30,38 @@ public class Vertex {
 		return cameFrom;
 	}
 	/**
-	 * Setter for the previous node attribute.
+	 * Setter for the previous node.
 	 * @param cameFrom Already initialized node 
 	 */
 	public void setCameFrom(Node cameFrom) {
 		this.cameFrom = cameFrom;
 	}
+	/**
+	 * Getter for the name of the vertex (value of the attribute it represents)
+	 * @return the name of the vertex (String)
+	 */
 	public String getValue() {
 		return value;
 	}
-	public void setValue(String value) {
-		this.value = value;
+	/**
+	 * Setter for the name of the vertex.
+	 * @param name Name of the vertex
+	 */
+	public void setValue(String name) {
+		this.value = name;
 	}
+	/**
+	 * Getter for the next node
+	 * @return the next node, or null if the current vertex has no next node yet.
+	 */
 	public Node getNext() {
 		return next;
 	}
-	public void setNext(Node next) {
-		this.next = next;
+	/**
+	 * Setter for the next node.
+	 * @param nextNode Already initialized node 
+	 */
+	public void setNext(Node nextNode) {
+		this.next = nextNode;
 	}
 }
