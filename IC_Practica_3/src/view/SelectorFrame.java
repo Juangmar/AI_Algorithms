@@ -15,9 +15,12 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import business.Kmean;
 
 /**
  * @author Juan Gómez-Martinho
@@ -90,7 +93,8 @@ public class SelectorFrame extends JFrame {
 	protected JTextField som_t_field;
 	protected JTextField som_tExp_field;
 	
-	File data; //To store the selected file (attribute's names).
+	protected final JFileChooser fc = new JFileChooser(); 
+	File data; //To store the selected file.
 	
 	/**
 	 *  Default serial version
@@ -191,7 +195,7 @@ public class SelectorFrame extends JFrame {
 		som_t_field = new JTextField("10");
 		som_tExp_field = new JTextField("-5");
 		
-		final JFileChooser fc = new JFileChooser(); 
+		
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Plain text files (.txt)", "txt", "text"); //Only .txt files will be allowed
 		fc.setFileFilter(filter); //The .txt filter is set to the File Chooser
 		
@@ -328,6 +332,28 @@ public class SelectorFrame extends JFrame {
 		dataPanel.add(exit);
 		body.add(dataPanel, BorderLayout.CENTER);
 		this.setSize(500,230);
+	}
+
+	public void fuzzySuccess(Kmean e) {
+		Double[] means = e.getMeans();
+		String values = "[";
+		for (int i = 0; i< means.length; i++) {
+			values = values + means[i];
+			if(i!=means.length-1) values = values + ", ";
+		}
+		values = values + "]";
+		int n = JOptionPane.showConfirmDialog(this, "The obtained menas are: " + values + "\n Do you want to check it's accuracy?", "Success!", JOptionPane.YES_NO_OPTION);   
+		switch(n) {
+			case(0):{
+				fuzzyTraining(e);
+			}
+			default:{}
+		}
+	}
+	
+	private void fuzzyTraining(Kmean e) {
+		FuzzyTrainingView select = new FuzzyTrainingView(e, fc);
+		select.setVisible(true);
 	}
 
 	
