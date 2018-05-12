@@ -1,18 +1,23 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * @author Juan Gómez-Martinho
@@ -20,71 +25,72 @@ import javax.swing.JTextField;
  */
 public class SelectorFrame extends JFrame {
 
-	private JPanel body;
-	private JPanel methodInfo;
-	private JPanel dataPanel;
+	protected JPanel body;
+	protected JPanel methodInfo;
+	protected JPanel dataPanel;
 	
-	private JLabel fileHeader;
-	private JLabel fileName;
-	private JLabel methodHeader;
-	private JComboBox<String> methods;
-	private JButton fileSelect;
-	private JButton go;
-	private JButton exit;
+	protected JLabel fileHeader;
+	protected JLabel fileName;
+	protected JLabel methodHeader;
+	protected JComboBox<String> methods;
+	protected JButton fileSelect;
+	protected JButton go;
+	protected JButton exit;
 	
 	//Common
-	private JLabel toleranceBase_label;
-	private JLabel exponent_label;
-	private JLabel iterations_label;
-	private JLabel constant_label;
+	protected JLabel toleranceBase_label;
+	protected JLabel exponent_label;
+	protected JLabel iterations_label;
+	protected JLabel constant_label;
 	
 	//Fuzzy 
 	//private JLabel Fuzzy_toleranceBase_label;
-	private JTextField fuzzy_toleranceBase_field;
+	protected JTextField fuzzy_toleranceBase_field;
 	
 	//private JLabel fuzzy_exponent_label;
-	private JTextField fuzzy_exponen_field;
+	protected JTextField fuzzy_exponen_field;
 	
-	private JLabel fuzzy_weigth_label;
-	private JTextField fuzzy_weight_field;
+	protected JLabel fuzzy_weigth_label;
+	protected JTextField fuzzy_weight_field;
 	
 	//Lloyd
 	//private JLabel lloyd_toleranceBase_label;
-	private JTextField lloyd_toleranceBase_field;
+	protected JTextField lloyd_toleranceBase_field;
 
 	//private JLabel lloyd_exponet_label;
-	private JTextField lloyd_exponent_field;
+	protected JTextField lloyd_exponent_field;
 	
 	//private JLabel lloyd_iterations_label;
-	private JTextField lloyd_iterations_field;
+	protected JTextField lloyd_iterations_field;
 	
 	//ptivate JLabel lloyd_constant_label;
-	private JTextField lloyd_constant_field;
+	protected JTextField lloyd_constant_field;
 	
 	
 	//SOM
 	//private JLabel som_toleranceBase_label;
-	private JTextField som_toleranceBase_field;
+	protected JTextField som_toleranceBase_field;
 	
 	//private JLabel som_exponent_label;
-	private JTextField som_exponent_field;
+	protected JTextField som_exponent_field;
 	
 	//private JLabel som_iterations_label;
-	private JTextField som_iterations_field;
+	protected JTextField som_iterations_field;
 	
 	//private JLabel som_constant_label;
-	private JTextField som_constant_field;
+	protected JTextField som_constant_field;
 	
-	private JLabel som_alpha_init_label;
-	private JTextField som_alpha_init_field;
+	protected JLabel som_alpha_init_label;
+	protected JTextField som_alpha_init_field;
 	
-	private JLabel som_alpha_end_label;
-	private JTextField som_alpha_end_field;
+	protected JLabel som_alpha_end_label;
+	protected JTextField som_alpha_end_field;
 	
-	private JLabel som_t_label;
-	private JTextField som_t_field;
+	protected JLabel som_t_label;
+	protected JTextField som_t_field;
+	protected JTextField som_tExp_field;
 	
-	private JTextField som_tExp_field;
+	File data; //To store the selected file (attribute's names).
 	
 	/**
 	 *  Default serial version
@@ -97,6 +103,14 @@ public class SelectorFrame extends JFrame {
 		this.setSize(500,300);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		/*
+		 * As a design choice, the window will be displayed in the middle of the screen.
+		 * To do so:
+		 */
+		
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); //We get the screen size
+		this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2); //The window is set to be in half the screen size (the middle) 
+		
 		loadWindow();
 	}
 	
@@ -110,10 +124,6 @@ public class SelectorFrame extends JFrame {
 		
 		loadDataFuzzy();
 		
-		//Load static north fields
-		
-		//Load initial center/data fields
-		
 		this.add(body);
 	}
 
@@ -125,7 +135,7 @@ public class SelectorFrame extends JFrame {
 		methodHeader = new JLabel("Select method:");
 		
 		//Common fields
-		String[] met = {"Fuzzy","Bayes", "Lloyd", "SOM"};
+		String[] met = {"Fuzzy","Bayes (Not implemented)", "Lloyd (Not implemented)", "SOM (Not implemented)"};
 		methods = new JComboBox<String>(met);
 		methods.addItemListener(new ItemListener() {
 
@@ -177,17 +187,54 @@ public class SelectorFrame extends JFrame {
 		som_alpha_init_field = new JTextField("0.1");
 		som_alpha_end_label = new JLabel("Final Alpha:");
 		som_alpha_end_field = new JTextField("0.01");
-		som_t_label = new JLabel("T:");
+		som_t_label = new JLabel("Update center when K-a(k) > T; T = ");
 		som_t_field = new JTextField("10");
 		som_tExp_field = new JTextField("-5");
 		
+		final JFileChooser fc = new JFileChooser(); 
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Plain text files (.txt)", "txt", "text"); //Only .txt files will be allowed
+		fc.setFileFilter(filter); //The .txt filter is set to the File Chooser
 		
 		fileSelect = new JButton("Select...");
+		fileSelect.addActionListener(new ActionListener() {
+
+			/* (non-Javadoc)
+			 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+			 */
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				//In response to a button click:
+				int returnVal = fc.showOpenDialog(body);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            data = fc.getSelectedFile(); //The selected file is stored in the global variable
+		            fileName.setText(data.getName()); //The label with the file is updated
+		            //If the data file is selected, the execute button is enabled.
+		            if(data!= null) {
+		            		go.setEnabled(true);
+		            }
+		        } else {
+		           System.out.println("Open command cancelled by user.");
+		        }
+			}
+		});
 		go = new JButton("Execute");
+		go.setEnabled(false);
+		go.addActionListener(new DataListener(this));
+		
 		exit = new JButton("Exit");
+		exit.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+			
+		});
 	}
 	
 	private void loadNorth() {
+		
+		
 		methodInfo = new JPanel(new GridLayout(2, 1));
 		
 		JPanel file = new JPanel(new GridLayout(1,3));
@@ -252,10 +299,35 @@ public class SelectorFrame extends JFrame {
 	
 	private void loadDataSOM() {
 		body.remove(dataPanel);
-		dataPanel = new JPanel(new GridLayout(3,2));
-		
+		dataPanel = new JPanel(new GridLayout(6,2));
+		dataPanel.add(toleranceBase_label);
+		JPanel tolerance = new JPanel(new GridLayout(1,2));
+			tolerance.add(som_toleranceBase_field);
+			tolerance.add(exponent_label);
+			tolerance.add(som_exponent_field);
+		dataPanel.add(tolerance);
+		dataPanel.add(iterations_label);
+		dataPanel.add(som_iterations_field);
+		dataPanel.add(constant_label);
+		dataPanel.add(som_constant_field);
+		JPanel alphaI = new JPanel(new GridLayout(1,2));
+			alphaI.add(som_alpha_init_label);
+			alphaI.add(som_alpha_init_field);
+		JPanel alphaF = new JPanel(new GridLayout(1,2));			
+			alphaF.add(som_alpha_end_label);
+			alphaF.add(som_alpha_end_field);
+		dataPanel.add(alphaI);
+		dataPanel.add(alphaF);
+		dataPanel.add(som_t_label);
+		JPanel k = new JPanel(new GridLayout(1, 3));
+			k.add(som_t_field);
+			k.add(exponent_label);
+			k.add(som_tExp_field);
+		dataPanel.add(k);
+		dataPanel.add(go);
+		dataPanel.add(exit);
 		body.add(dataPanel, BorderLayout.CENTER);
-		this.setSize(500,170);
+		this.setSize(500,230);
 	}
 
 	
