@@ -13,13 +13,13 @@ public class ApplicationController {
 		String[] result = manager.loadClass(e);
 		return result;
 	}
-	public HashMap<Double[][], String> loadData(File e){
+	public HashMap<Double[], String> loadData(File e){
 		DataManager manager = new DataManager();
-		HashMap<Double[][], String> result = manager.loadData(e);
+		HashMap<Double[], String> result = manager.loadData(e);
 		return result;
 	}
 	public Kmean kmeans(File f, double tolerance, double weigth) {
-		HashMap<Double[][], String> data = loadData(f);
+		HashMap<Double[], String> data = loadData(f);
 		if(data != null) {
 			Kmean manager = new Kmean(data);
 			boolean success = manager.execute(tolerance, weigth);
