@@ -47,29 +47,53 @@ public class Kmean {
 		
 		probabilities = computeProbablties();
 		Double change = Double.MAX_VALUE;
-		while(change < tolerance) {
-			List<Double[]> newMeans = redoCenters();
+		while(change > tolerance) {
+			List<Double[]> newMeans = redoCenters(means, probabilities);
 			probabilities = computeProbablties();
-			change = computeChange(means, newMeans);
+			change = computeBiggestChange(means, newMeans);
 			means = newMeans;
 		}
 		
 		return success;
 	}
 	
-	private Double computeChange(List<Double[]> means2, List<Double[]> newMeans) {
+	private Double computeBiggestChange(List<Double[]> means2, List<Double[]> newMeans) {
+		double change = 0.0;
+
+		for (int i = 0; i < means2.size(); i++) {
+			
+			double distance = dist(means2.get(i), newMeans.get(i));
+			if(distance > change) change = distance;
+		}
 		
-		//here see how the means had changed.
-		
-		return 0.0;
+		return change;
 	}
 		
 
-	private List<Double[]> redoCenters() {
+	private List<Double[]> redoCenters(List<Double[]> originalMeans, Double[][] probabilities2) {
 		
+		double num = 0.0;
+		double den = 0.0;
+		List<Double[]> result = new ArrayList<Double[]>();
 		//here the formula:
 		//vi = ( sum[j=1...n](probabilidad(ci/xj))^b * xj ) / (sum[j=1...n](probabilidad(ci/xj))^b)
 		
+		for(int i = 0; i < c; i++) {
+			Double[] value = new Double[originalMeans.get(0).length];
+			
+			for (int y  = 0; y < value.length; y++) {
+				double position = 0.0;
+				Iterator<Entry<Double[], String>> iterator = trainingData.entrySet().iterator();
+				int j = 0;
+				while(iterator.hasNext()) {
+					Entry<Double[], String> current = iterator.next();
+					position = Math.pow(probabilities2[i][j], weigth) * current.getKey()[y]; //X[y][j];
+					j++;
+				}
+					
+			}
+		}
+					
 		return null;
 	}
 
