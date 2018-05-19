@@ -35,9 +35,10 @@ public class Kmean {
 		
 		int n = trainingData.size();
 		int c = nClass();
-		Double[][] probablties = new Double[c][n];
 		
-		initializeCenters(c, n);
+		List<Double[]> v = initializeCenters(c, n);
+		
+		Double[][] probablties = initializeProbablties(c, n, v);
 		
 		//Random centers initialized. Time for the probabilities
 		
@@ -62,7 +63,7 @@ public class Kmean {
 		return p;
 	}
 	
-	private void initializeCenters(int c, int n) {
+	private List<Double[]> initializeCenters(int c, int n) {
 		List<Double[]> v = new ArrayList<Double[]>();
 		Random r = new Random();
 		while(v.size() < c) {
@@ -81,6 +82,30 @@ public class Kmean {
 			}
 
 		}
+		return v;
+	}
+	
+	private Double[][] initializeProbablties(int c, int n, List<Double[]> center){
+		Double[][] result = new Double[c][n];
+		Iterator<Entry<Double[], String>> iterator = trainingData.entrySet().iterator();
+		int count = 0;
+		while(iterator.hasNext()) {
+			Entry<Double[], String> current = iterator.next();
+			for (int i = 0; i < c; i++){
+				result[i][count] = probablties(center.get(i), current.getKey());
+			}
+			count++;
+		}
+		
+		return result;
+	}
+
+	private double probablties(Double[] center, Double[] value) {
+		double result = (1/0);
+		
+		
+		
+		return 0.0;
 	}
 
 }
