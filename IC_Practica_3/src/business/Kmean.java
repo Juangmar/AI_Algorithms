@@ -35,7 +35,34 @@ public class Kmean {
 		
 		int n = trainingData.size();
 		int c = nClass();
+		Double[][] probablties = new Double[c][n];
+		
+		initializeCenters(c, n);
+		
+		//Random centers initialized. Time for the probabilities
+		
+		
+		return success;
+	}
+	
+	public void setMeans(Double[] e) {
+		this.means = e;
+	}
 
+	private int nClass() {
+		int p = 0;
+		List<String> a = new ArrayList<String>();
+		if(trainingData!=null) {
+			trainingData.forEach((k,v)->{
+				if(!a.contains(v)) a.add(v);
+			});
+			p = a.size();
+		}
+		
+		return p;
+	}
+	
+	private void initializeCenters(int c, int n) {
 		List<Double[]> v = new ArrayList<Double[]>();
 		Random r = new Random();
 		while(v.size() < c) {
@@ -54,27 +81,6 @@ public class Kmean {
 			}
 
 		}
-		//Random centers initialized
-		
-		
-		return success;
-	}
-
-	public void setMeans(Double[] e) {
-		this.means = e;
-	}
-
-	private int nClass() {
-		int p = 0;
-		List<String> a = new ArrayList<String>();
-		if(trainingData!=null) {
-			trainingData.forEach((k,v)->{
-				if(!a.contains(v)) a.add(v);
-			});
-			p = a.size();
-		}
-		
-		return p;
 	}
 
 }
