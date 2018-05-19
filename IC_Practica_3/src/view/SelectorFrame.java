@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -335,14 +336,19 @@ public class SelectorFrame extends JFrame {
 	}
 
 	public void fuzzySuccess(Kmean e) {
-		Double[] means = e.getMeans();
-		String values = "[";
-		for (int i = 0; i< means.length; i++) {
-			values = values + means[i];
-			if(i!=means.length-1) values = values + ", ";
+		List<Double[]> means = e.getMeans();
+		String text = "[";
+		for (int i = 0; i< means.size(); i++) {
+			Double[] values = means.get(i);
+			String center = "{ ";
+			for(int j = 0; j < values.length; j++) {
+				center = center + values[j] + " ";
+			}
+			text = text + center + "}";
+			if(i!=(means.size()-1)) text = text + ", ";
 		}
-		values = values + "]";
-		int n = JOptionPane.showConfirmDialog(this, "The obtained menas are: " + values + "\n Do you want to check it's accuracy?", "Success!", JOptionPane.YES_NO_OPTION);   
+		text = text + "]";
+		int n = JOptionPane.showConfirmDialog(this, "The obtained menas are:\n" + text + "\n Do you want to check it's accuracy?", "Success!", JOptionPane.YES_NO_OPTION);   
 		switch(n) {
 			case(0):{
 				fuzzyTraining(e);

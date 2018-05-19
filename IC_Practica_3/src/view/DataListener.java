@@ -50,9 +50,7 @@ public class DataListener implements ActionListener {
 			if(result != null) {
 				frame.fuzzySuccess(result);
 			}else {
-				Double[] e = {1.2, 3.0, 9.1123123, 6.112, 1.0};
 				result = new Kmean();
-				result.setMeans(e);
 				frame.fuzzySuccess(result);
 				//JOptionPane.showMessageDialog(frame, "Error: there's no solution. Please try changing the tolerance or the weigth.", "Solution not found", JOptionPane.ERROR_MESSAGE);
 			}
