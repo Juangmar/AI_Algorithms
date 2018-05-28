@@ -14,6 +14,7 @@ public class Kmean {
 	private List<Double[]> means;
 	private int n;
 	private int c;
+	private List<String> classes;
 	private Double[][] probabilities;
 	
 	public Kmean(HashMap<Double[], String> data) {
@@ -107,12 +108,15 @@ public class Kmean {
 
 	private int nClass() {
 		int p = 0;
-		List<String> a = new ArrayList<String>();
+	
+		classes = new ArrayList<String>();
 		if(trainingData!=null) {
 			trainingData.forEach((k,v)->{
-				if(!a.contains(v)) a.add(v);
+				if(!classes.contains(v)) {
+					classes.add(v);
+				}
 			});
-			p = a.size();
+			p = classes.size();
 		}
 		
 		return p;
@@ -184,7 +188,32 @@ public class Kmean {
 	}
 
 	public double test(HashMap<Double[], String> data) {
-		return 0.0;
+		double acc = 0;
+		int cases = 0;
+		int correct = 0;
+		
+		Iterator<Entry<Double[], String>> iterator = data.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<Double[], String> current = iterator.next();
+			cases++;
+			String predict = predict(current.getKey());
+			if (predict.equals(current.getValue())) correct++;
+		}
+		acc = (double) correct / (double) cases;
+		return acc;
+	}
+	
+	private String predict(Double[] value) {
+		double valueMostProbable = 0.0;
+		int classMostProbable = 0;
+		for (int i = 0; i < c; i++){
+			double p = probablties(means.get(i),value);
+			if( p > valueMostProbable) {
+				valueMostProbable=p;
+				classMostProbable=i;
+			}
+		}
+		return classes.get(classMostProbable);
 	}
 
 }
