@@ -196,7 +196,7 @@ public class FuzzyTrainingView extends JFrame{
 		body.add(go);
 		
 		this.add(body);
-		this.setSize(550,((fileselectors.size()+3)*36));
+		this.setSize(550,((fileselectors.size()+3)*30));
 	}
 	
 	private void deleteFile(int in) {
@@ -227,7 +227,7 @@ public class FuzzyTrainingView extends JFrame{
 		body.add(go);
 		
 		this.add(body);
-		this.setSize(550,((fileselectors.size()+3)*36));
+		this.setSize(550,((fileselectors.size()+3)*30));
 	}
 
 	
@@ -239,7 +239,7 @@ public class FuzzyTrainingView extends JFrame{
 			Iterator<Entry<Integer, File>> it = trainingSets.entrySet().iterator();
 			while(it.hasNext()) {
 				Map.Entry<Integer, File> pair = (Map.Entry<Integer, File>) it.next();
-				if(!trainingCases.contains(pair.getValue())) trainingCases.add(pair.getValue());
+				if((!trainingCases.contains(pair.getValue())&&(pair.getValue().isFile()))) trainingCases.add(pair.getValue());
 			}
 			
 			if(trainingCases.isEmpty()) {
@@ -248,7 +248,7 @@ public class FuzzyTrainingView extends JFrame{
 				ApplicationController a = new ApplicationController();
 				HashMap<Double[], String> data = a.loadManyData(trainingCases);
 				double accuracy = manager.test(data);
-				JOptionPane.showMessageDialog(this, "For the previous training cases and the given test data, the accuracy is: " + accuracy + ".", "Accuracy of KMeans", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, "For the previous training cases and the given test data, the accuracy is:\n" + accuracy*100 + "%", "Accuracy of KMeans", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 	}

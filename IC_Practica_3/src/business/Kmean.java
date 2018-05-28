@@ -59,12 +59,12 @@ public class Kmean {
 		return success;
 	}
 	
-	private Double computeBiggestChange(List<Double[]> means2, List<Double[]> newMeans) {
+	private Double computeBiggestChange(List<Double[]> means, List<Double[]> newMeans) {
 		double change = 0.0;
 
-		for (int i = 0; i < means2.size(); i++) {
+		for (int i = 0; i < means.size(); i++) {
 			
-			double distance = dist(means2.get(i), newMeans.get(i));
+			double distance = dist(means.get(i), newMeans.get(i));
 			if(distance > change) change = distance;
 		}
 		
@@ -75,8 +75,6 @@ public class Kmean {
 	private List<Double[]> redoCenters(List<Double[]> v, Double[][] p) {
 		
 		List<Double[]> new_V = new ArrayList<Double[]>();
-
-		//vi = ( sum[j=1...n](probabilidad(ci/xj))^b * xj ) / (sum[j=1...n](probabilidad(ci/xj))^b)
 		
 		for(int i = 0; i < v.size(); i++) {
 			Double newMean[] = new Double[v.get(i).length];

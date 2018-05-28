@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -337,15 +338,16 @@ public class SelectorFrame extends JFrame {
 
 	public void fuzzySuccess(Kmean e) {
 		List<Double[]> means = e.getMeans();
-		String text = "[";
+		String text = "";
+		DecimalFormat df = new DecimalFormat("#.####");
 		for (int i = 0; i< means.size(); i++) {
 			Double[] values = means.get(i);
 			String center = "{ ";
 			for(int j = 0; j < values.length; j++) {
-				center = center + values[j] + " ";
+				center = center + df.format(values[j]) + ", ";
 			}
 			text = text + center + "}";
-			if(i!=(means.size()-1)) text = text + ", ";
+			if(i!=(means.size()-1)) text = text + ",\n";
 		}
 		text = text + "]";
 		int n = JOptionPane.showConfirmDialog(this, "The obtained menas are:\n" + text + "\n Do you want to check it's accuracy?", "Success!", JOptionPane.YES_NO_OPTION);   
