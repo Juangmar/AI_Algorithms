@@ -6,16 +6,22 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import business.Kmean;
+import controller.ApplicationController;
 
 public class FuzzyTrainingView extends JFrame{
 
@@ -31,7 +37,7 @@ public class FuzzyTrainingView extends JFrame{
 	private int nextFile;
 	protected JFileChooser fc = new JFileChooser(); 
 	private Kmean manager;
-	
+	public FuzzyTrainingView instance;
 	public FuzzyTrainingView(Kmean e, JFileChooser fchooser) {
 		super();
 		manager = e;
@@ -44,7 +50,7 @@ public class FuzzyTrainingView extends JFrame{
 		 * As a design choice, the window will be displayed in the middle of the screen.
 		 * To do so:
 		 */
-		
+		instance = this;
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); //We get the screen size
 		this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2); //The window is set to be in half the screen size (the middle) 
 		initialize();
@@ -56,7 +62,23 @@ public class FuzzyTrainingView extends JFrame{
 		filedeleters = new HashMap<Integer, JButton>();
 		nextFile = 0;
 		go = new JButton("Test Accuracy");
+		go.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				execute();
+			}
+			
+		});
 		cancel = new JButton("Cancel");
+		cancel.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				instance.dispose();
+			}
+			
+		});
 		addFile = new JButton("Add another testing set");
 		addFile.addActionListener(new ActionListener() {
 
@@ -99,6 +121,7 @@ public class FuzzyTrainingView extends JFrame{
 			}
 			
 		});
+		filedeleters.put(0,  firstD);
 		fileselectors.put(0, firstB);
 		nextFile++;
 		
@@ -207,4 +230,27 @@ public class FuzzyTrainingView extends JFrame{
 		this.setSize(550,((fileselectors.size()+3)*36));
 	}
 
+	
+	private void execute() {
+		if(trainingSets.isEmpty()) {
+			
+		} else {
+			ArrayList<File> trainingCases = new ArrayList<File>();
+			Iterator<Entry<Integer, File>> it = trainingSets.entrySet().iterator();
+			while(it.hasNext()) {
+				Map.Entry<Integer, File> pair = (Map.Entry<Integer, File>) it.next();
+				if(!trainingCases.contains(pair.getValue())) trainingCases.add(pair.getValue());
+			}
+			
+			if(trainingCases.isEmpty()) {
+				
+			}else {
+				ApplicationController a = new ApplicationController();
+				HashMap<Double[], String> data = a.loadManyData(trainingCases);
+				double accuracy = manager.test(data);
+				JOptionPane.showMessageDialog(this, "For the previous training cases and the given test data, the accuracy is: " + accuracy + ".", "Accuracy of KMeans", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+	}
+	
 }

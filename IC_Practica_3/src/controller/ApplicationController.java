@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import business.Kmean;
@@ -29,6 +30,14 @@ public class ApplicationController {
 			else return null;
 		}
 		else return null;
+	}
+	public HashMap<Double[], String> loadManyData(ArrayList<File> trainingCases) {
+		HashMap<Double[], String> result = new HashMap<Double[], String>();
+		for(File f:trainingCases) {
+			HashMap<Double[], String> cases = loadData(f);
+			result.putAll(cases);
+		}
+		return result;
 	}
 	
 }

@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 
 public class Kmean {
 
@@ -46,13 +45,15 @@ public class Kmean {
 		means = initializeCenters();
 		
 		probabilities = computeProbablties();
-		Double change = Double.MAX_VALUE;
+		Double change = tolerance+1;
 		while(change > tolerance) {
 			List<Double[]> newMeans = redoCenters(means, probabilities);
 			probabilities = computeProbablties();
 			change = computeBiggestChange(means, newMeans);
 			means = newMeans;
 		}
+		
+		if(change < tolerance) return true;
 		
 		return success;
 	}
@@ -70,31 +71,34 @@ public class Kmean {
 	}
 		
 
-	private List<Double[]> redoCenters(List<Double[]> originalMeans, Double[][] probabilities2) {
+	private List<Double[]> redoCenters(List<Double[]> v, Double[][] p) {
 		
-		double num = 0.0;
-		double den = 0.0;
-		List<Double[]> result = new ArrayList<Double[]>();
-		//here the formula:
+		List<Double[]> new_V = new ArrayList<Double[]>();
+
 		//vi = ( sum[j=1...n](probabilidad(ci/xj))^b * xj ) / (sum[j=1...n](probabilidad(ci/xj))^b)
 		
-		for(int i = 0; i < c; i++) {
-			Double[] value = new Double[originalMeans.get(0).length];
-			
-			for (int y  = 0; y < value.length; y++) {
-				double position = 0.0;
-				Iterator<Entry<Double[], String>> iterator = trainingData.entrySet().iterator();
-				int j = 0;
-				while(iterator.hasNext()) {
-					Entry<Double[], String> current = iterator.next();
-					position = Math.pow(probabilities2[i][j], weigth) * current.getKey()[y]; //X[y][j];
-					j++;
+		for(int i = 0; i < v.size(); i++) {
+			Double newMean[] = new Double[v.get(i).length];
+			double num[] = new double[v.get(i).length];
+			double den[] = new double[v.get(i).length];
+			Iterator<Entry<Double[], String>> iterator = trainingData.entrySet().iterator();
+			int t_case = 0;
+			while(iterator.hasNext()) {
+				Map.Entry<Double[], String> pair = (Map.Entry<Double[], String>)iterator.next();
+				for(int j = 0; j < pair.getKey().length; j++) {
+					double w = Math.pow(p[i][t_case], weigth);
+					num[j] += w * pair.getKey()[j];
+					den[j] += w;
 				}
-					
+				t_case++;
 			}
+			for(int j = 0; j < v.get(i).length; j++) {
+				newMean[j] = num[j]/den[j];
+			}
+			new_V.add(newMean);
 		}
 					
-		return null;
+		return new_V;
 	}
 
 	public void setMeans(List<Double[]> e) {
@@ -116,7 +120,7 @@ public class Kmean {
 	
 	private List<Double[]> initializeCenters() {
 		List<Double[]> v = new ArrayList<Double[]>();
-		Random r = new Random();
+		/*Random r = new Random();
 		while(v.size() < c) {
 			int ind = r.nextInt(n-1);
 			
@@ -132,7 +136,11 @@ public class Kmean {
 				}
 			}
 
-		}
+		}*/
+		Double[] one = {4.6, 3.0, 4.0, 0.0};
+		Double[] two = {6.8, 3.4, 4.6, 0.7};
+		v.add(one);
+		v.add(two);
 		return v;
 	}
 	
@@ -173,6 +181,10 @@ public class Kmean {
 		        }
 		        return Math.sqrt(sum);
 		}
+	}
+
+	public double test(HashMap<Double[], String> data) {
+		return 0.0;
 	}
 
 }

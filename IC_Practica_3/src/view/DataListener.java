@@ -50,9 +50,7 @@ public class DataListener implements ActionListener {
 			if(result != null) {
 				frame.fuzzySuccess(result);
 			}else {
-				result = new Kmean();
-				frame.fuzzySuccess(result);
-				//JOptionPane.showMessageDialog(frame, "Error: there's no solution. Please try changing the tolerance or the weigth.", "Solution not found", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(frame, "Error: there's no solution. Please try changing the tolerance or the weigth.", "Solution not found", JOptionPane.ERROR_MESSAGE);
 			}
 		} catch(NumberFormatException one) {
 			JOptionPane.showMessageDialog(frame, "Insert valid numeric data", "Fatal error", JOptionPane.ERROR_MESSAGE);		
