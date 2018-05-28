@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * @author Juan Gomez-Martinho
+ * License MIT, 2018
+ */
 public class Kmean {
 
 	private HashMap<Double[], String> trainingData;

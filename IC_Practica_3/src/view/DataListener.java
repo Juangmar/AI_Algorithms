@@ -8,6 +8,10 @@ import javax.swing.JOptionPane;
 import business.Kmean;
 import controller.ApplicationController;
 
+/**
+ * @author Juan Gomez-Martinho
+ * License MIT, 2018
+ */
 public class DataListener implements ActionListener {
 
 	private SelectorFrame frame; //View associated with the listener

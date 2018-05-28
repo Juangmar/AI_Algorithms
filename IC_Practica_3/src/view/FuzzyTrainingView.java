@@ -23,6 +23,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import business.Kmean;
 import controller.ApplicationController;
 
+/**
+ * @author Juan Gomez-Martinho
+ * License MIT, 2018
+ */
 public class FuzzyTrainingView extends JFrame{
 
 	/**

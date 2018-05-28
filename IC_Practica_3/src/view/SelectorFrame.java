@@ -25,8 +25,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import business.Kmean;
 
 /**
- * @author Juan Gómez-Martinho
- *
+ * @author Juan Gomez-Martinho
+ * License MIT, 2018
  */
 public class SelectorFrame extends JFrame {
 

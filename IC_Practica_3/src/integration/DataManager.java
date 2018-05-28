@@ -4,12 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
 
+/**
+ * @author Juan Gomez-Martinho
+ * License MIT, 2018
+ */
 public class DataManager {
-
-	public String[] loadClass(File e) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public HashMap<Double[], String> loadData(File file) {
 		if (file.canRead()) { //Execute only if the file is readable 
